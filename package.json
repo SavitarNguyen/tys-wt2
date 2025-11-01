@@ -12,6 +12,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.3",
+    "@google/generative-ai": "^0.24.1",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "@types/diff-match-patch": "^1.0.32",
