@@ -67,7 +67,7 @@ export function BandScoresWithEvidence({
 
       <Stack spacing={3}>
         {bandScores.map((score) => {
-          const info = criterionInfo[score.criterion];
+          const info = criterionInfo[score.criterion] || { name: "Unknown", color: "#757575" };
           return (
             <Card key={score.criterion} variant="outlined">
               <CardContent>
