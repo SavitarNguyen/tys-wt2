@@ -6,8 +6,10 @@ import {
   refinedAtom,
   resultAtom,
   textAtom,
+  ieltsFeedbackAtom,
 } from "../atoms";
 import { compareStrings } from "../utils";
+import { IELTSFeedback } from "@/lib/types/ielts";
 
 export function useRefine() {
   const [text] = useAtom(textAtom);
@@ -16,21 +18,23 @@ export function useRefine() {
   const [, setResult] = useAtom(resultAtom);
   const [, setRefined] = useAtom(refinedAtom);
   const [, setIsIELTSMode] = useAtom(isIELTSModeAtom);
+  const [, setIeltsFeedback] = useAtom(ieltsFeedbackAtom);
 
   return async function refine() {
     if (text.trim().length === 0) {
       setRefined("");
       setResult([]);
       setIsIELTSMode(false);
+      setIeltsFeedback(null);
       return;
     }
     setResult([]);
     setLoading(true);
-    
+
     // Check if IELTS mode is active
     const isIELTS = instructionNames.includes("ielts");
     setIsIELTSMode(isIELTS);
-    
+
     const result = await fetch("api/v1/refine", {
       method: "POST",
       headers: {
@@ -40,14 +44,22 @@ export function useRefine() {
     });
     const localRefined = (await result.json())["refined"];
     setRefined(localRefined);
-    
-    // For IELTS mode, we'll handle the rendering in RefinedArea
+
+    // For IELTS mode, parse JSON and store structured feedback
     // For regular mode, use diff view
     if (!isIELTS) {
       setResult(compareStrings(text, localRefined));
+      setIeltsFeedback(null);
     } else {
-      // For IELTS mode, set empty result since we'll render from refinedAtom
-      setResult([]);
+      try {
+        const feedbackData: IELTSFeedback = JSON.parse(localRefined);
+        setIeltsFeedback(feedbackData);
+        setResult([]);
+      } catch (error) {
+        console.error("Failed to parse IELTS feedback JSON:", error);
+        // Fallback to showing raw text
+        setResult([]);
+      }
     }
     setLoading(false);
   };

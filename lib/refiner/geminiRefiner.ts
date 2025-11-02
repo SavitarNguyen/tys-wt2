@@ -23,7 +23,7 @@ export async function geminiRefineText(
   const hasIeltsInstruction = instructions.some(inst => inst.name === "ielts");
   
   if (hasIeltsInstruction) {
-    return handleIELTSMode(text, instructions, languageName);
+    return handleIELTSModeInteractive(text, instructions, languageName);
   }
   
   // Regular Gemini refinement
@@ -64,163 +64,136 @@ Detailed Feedback with Inline Edits. Instructions:
   }
 }
 
-async function handleIELTSMode(
+async function handleIELTSModeInteractive(
   text: string,
   instructions: Instruction[],
   languageName: string | undefined
 ): Promise<string> {
-  const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Provide comprehensive feedback following this EXACT template:
+  const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Return a JSON object with comprehensive sentence-level feedback.
 
-# IELTS Writing Task 2 Feedback Report
+CRITICAL: Your response must be ONLY valid JSON, nothing else.
 
-**Topic:** [Identify the essay topic]  
-**Candidate Band (Estimated):** [Overall band score]  
+{
+  "topic": "Essay topic",
+  "overallBand": 6.5,
+  "bandScores": [
+    {
+      "criterion": "TR",
+      "score": 6.5,
+      "feedback": "Detailed explanation",
+      "evidence": ["Quote 1", "Quote 2"]
+    },
+    {
+      "criterion": "CC",
+      "score": 6.0,
+      "feedback": "Detailed explanation",
+      "evidence": ["Quote 1"]
+    },
+    {
+      "criterion": "LR",
+      "score": 7.0,
+      "feedback": "Detailed explanation",
+      "evidence": ["Quote 1"]
+    },
+    {
+      "criterion": "GRA",
+      "score": 6.0,
+      "feedback": "Detailed explanation",
+      "evidence": ["Quote 1"]
+    }
+  ],
+  "sentences": [
+    {
+      "id": "sent-1",
+      "originalSentence": "Exact sentence from essay",
+      "correctedSentence": "Corrected version",
+      "wordCorrections": [
+        {"original": "word", "revised": "better_word", "type": "replacement"}
+      ],
+      "errors": [
+        {
+          "type": "Grammar",
+          "issue": "Brief issue description",
+          "explanation": "Why wrong",
+          "howToRevise": "How to fix"
+        }
+      ],
+      "vocabSuggestions": [
+        {
+          "original": "word",
+          "suggestion": "better alternative",
+          "explanation": "Why better",
+          "example": "Example sentence"
+        }
+      ],
+      "criteria": ["GRA", "LR"]
+    }
+  ],
+  "paragraphs": [
+    {
+      "paragraphNumber": 1,
+      "text": "Full paragraph",
+      "taskAchievement": {
+        "addressesPrompt": true,
+        "explanation": "Assessment",
+        "suggestions": ["Tip 1"]
+      },
+      "coherenceCohesion": {
+        "hasTopicSentence": true,
+        "transitions": "Assessment",
+        "logicalFlow": "Assessment",
+        "suggestions": ["Tip 1"]
+      }
+    }
+  ],
+  "overallTA": "Overall task achievement",
+  "overallCC": "Overall coherence",
+  "strengths": ["Strength 1"],
+  "improvements": ["Improvement 1"],
+  "fullReport": "# Markdown report"
+}
 
----
+CRITICAL INSTRUCTIONS:
+1. Split essay into sentences, analyze each sentence separately
+2. For EVERY error you identify in the "errors" array, you MUST also provide the exact word/phrase correction in "wordCorrections"
+3. wordCorrections MUST include an entry for EVERY error - no exceptions
+4. Match the exact words from originalSentence in wordCorrections
+5. Types: "deletion" (remove word), "replacement" (change word), "addition" (add word)
+6. If an error spans multiple words, create wordCorrections for each affected word
+7. List ALL errors with detailed HOW TO FIX guidance
+8. Suggest better vocabulary alternatives even if current words are correct
+9. Analyze each paragraph for TA & CC compliance
+10. Evidence quotes must be verbatim from the essay
 
-## Criterion Scores
+EXAMPLE of proper error-to-correction mapping:
+If originalSentence is "He go to school yesterday" and you identify a Grammar error "go should be went":
+- errors: [{"type": "Grammar", "issue": "Incorrect verb tense", ...}]
+- wordCorrections: [{"original": "go", "revised": "went", "type": "replacement"}]
 
-| Criterion | Band | Key Observations |
-|------------|------|------------------|
-| Task Response (TR) | [x] | [Explain coverage of prompt, clarity of stance, and strength of examples.] |
-| Coherence & Cohesion (CC) | [x] | [Comment on flow, logical order, and paragraphing.] |
-| Lexical Resource (LR) | [x] | [Discuss vocabulary range and appropriacy.] |
-| Grammatical Range & Accuracy (GRA) | [x] | [Evaluate variety and precision of grammar.] |
-
----
-
-### Introduction  
-**Student Text:**  
-> [Paste introduction paragraph here]
-
-**Revised Version:**  
-> It is believed that some children spend **too much** time watching TV and do not exercise enough, which is a serious problem.  
-> I completely agree with this opinion because this affects not only their physical health but also their **social life**.  
-> **This essay will discuss both the potential benefits and serious drawbacks of this trend.**
-
-**Feedback:**  
-- **“too much”** – corrected spelling (“to much”) for grammatical accuracy. [GRA]  
-- **Added overview sentence** – improves task fulfilment and essay structure clarity. [TR/CC]  
-- “social life” retained – concise and precise. [LR]  
-
----
-
-### Body Paragraph 1  
-**Student Text:**  
-> [Paste student paragraph here]
-
-**Revised Version:**  
-> On the one hand, watching TV can **offer several advantages**.  
-> For example, when parents watch TV with their children, they can discuss the show and guide them **towards appropriate programs**.  
-> This also allows families to spend more quality time together.  
-> However, these benefits are only **realised** when screen time is limited.
-
-**Feedback:**  
-- **“offer several advantages”** – more formal than “bring some advantages.” [LR]  
-- **“towards appropriate programs”** – refined collocation. [LR]  
-- **“realised”** – fixed spelling. [GRA]  
-- Add **one specific example** (e.g., a named educational show) for stronger development. [TR]  
-
----
-
-###  Body Paragraph 2  
-**Student Text:**  
-> [Paste student paragraph here]
-
-**Revised Version:**  
-> On the other hand, watching too much TV without enough exercise **becomes a serious problem**.  
-> Socially, they may also spend less time **with friends or engaging in outdoor activities**.  
-> As a result, they miss out on learning new things, and **this lack of interaction can reduce their confidence**.  
-> In addition, when children spend hours watching TV, it **makes it harder for them to stay focused in class**.
-
-**Feedback:**  
-- **“becomes a serious problem”** – fixed tense for accuracy. [GRA]  
-- **“in front of screens are less active”** – smoother syntax, improves cohesion. [CC/GRA]  
-- **“to gain weight”** – adds correct infinitive form. [GRA]  
-- **“with friends or engaging in outdoor activities”** – fixed parallelism. [GRA/CC]  
-- **“this lack of interaction can reduce their confidence”** – improved precision. [LR/TR]  
-- Logical progression improved; strong paragraph closure. [CC]  
-
----
-
-###  Conclusion  
-**Student Text:**  
-> [Paste conclusion paragraph here]
-
-**Revised Version:**  
-> In conclusion, I believe that when children watch too much TV and do not exercise enough, it becomes a **significant problem**.  
-> **This imbalance can negatively affect both their health and social development.**
-
-**Feedback:**  
-- **“significant problem”** – formal and natural phrasing. [LR]  
-- **“This imbalance…”** – strengthens cohesion and summarises main points. [CC/TR]  
-- Clear, confident close; good academic tone. [TR]
-
----
-Analyze the essay paragraph by paragraph. For each paragraph:
-
-1. Show **Student Text:** (original paragraph)
-2. Show **Revised Version:** (with **bold** changes)
-3. Show **Feedback:** (detailed feedback with criterion labels)
-## Vocabulary & Grammar Upgrade Summary  
-
-| Original | Improved | Why | Criterion |
-|--------|----------|-----|-----------|
-| [Original phrase] | **[Improved phrase]** | [Explanation] | [TR/CC/LR/GRA] |
-
----
-
-## How to Upgrade to Next Band  
-
-Provide 5-6 actionable improvements:
-1. [Specific improvement] ([Criterion])
-2. [Specific improvement] ([Criterion])
-3. [Specific improvement] ([Criterion])
-4. [Specific improvement] ([Criterion])
-5. [Specific improvement] ([Criterion])
-
----
-
-## Sample Model (Band +1 Higher)
-
-> Show how an essay one band higher improves idea depth, vocabulary, and grammar complexity.
-
-**Sample Essay (Band [x+1]):**  
-> [Complete rewritten essay that is one band higher]
-
----
-
-### Highlight Analysis
-
-| Highlight | Function | Criterion Improved |
-|------------|-----------|--------------------|
-| **[Sample phrase]** | [Function] | [Criterion] |
-
-${formatInstructions(instructions)}
-
----
-
-Now, analyze the following essay and provide comprehensive IELTS feedback:
-
----
+REMEMBER: Every single error in "errors" must have a corresponding "wordCorrections" entry!
 
 ${text}`;
 
   try {
-    const geminiModel = genAI.getGenerativeModel({ model });
-    
+    const geminiModel = genAI.getGenerativeModel({
+      model,
+      generationConfig: {
+        responseMimeType: "application/json"
+      }
+    });
+
     const result = await geminiModel.generateContent([ieltsPrompt]);
-    
-    const response = await result.response;
-    const refined = response.text();
-    
-    await trackRefine(text, ieltsPrompt, refined, instructions, languageName);
-    return refined;
+    const response = result.response;
+    const jsonResponse = response.text();
+
+    await trackRefine(text, ieltsPrompt, jsonResponse, instructions, languageName);
+    return jsonResponse;
   } catch (error) {
-    console.error("IELTS Gemini API error:", error);
-    throw new Error("Failed to generate IELTS feedback with Gemini API");
+    console.error("IELTS Interactive Gemini API error:", error);
+    throw new Error("Failed to generate interactive IELTS feedback with Gemini API");
   }
 }
+
 
 function getLanguageInstruction(languageName: string | undefined): string {
   const fallbackInstruction =
