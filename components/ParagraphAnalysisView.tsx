@@ -86,16 +86,37 @@ export function ParagraphAnalysisView({
                 </Typography>
               </Paper>
 
-              {/* Task Achievement */}
-              <Box>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+              {/* Overall Band & Comparative Feedback - Always Visible */}
+              {para.overallParagraphBand && (
+                <Paper sx={{ p: 2, bgcolor: "#fff3e0", border: "1px solid #ffb74d" }}>
+                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                    Overall Paragraph Band
+                  </Typography>
+                  <Typography variant="body2">{para.overallParagraphBand}</Typography>
+                </Paper>
+              )}
+
+              {para.comparativeFeedback && (
+                <Paper sx={{ p: 2, bgcolor: "#f3e5f5", border: "1px solid #ba68c8" }}>
+                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                    Comparative Feedback
+                  </Typography>
+                  <Typography variant="body2">{para.comparativeFeedback}</Typography>
+                </Paper>
+              )}
+
+              {/* Nested Accordion: Task Achievement */}
+              <Accordion defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Chip label="TR" color="primary" size="small" />
-                    <span>Task Achievement</span>
+                    <Typography variant="subtitle2" fontWeight="bold">
+                      Task Achievement Analysis
+                    </Typography>
                   </Stack>
-                </Typography>
-
-                <Stack spacing={1.5}>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack spacing={1.5}>
                   <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
                     <Typography variant="caption" color="text.secondary" fontWeight="bold">
                       Main Idea:
@@ -200,26 +221,29 @@ export function ParagraphAnalysisView({
                             </ListItemIcon>
                             <ListItemText
                               primary={step}
-                              primaryTypographyProps={{ variant: "body2", sx: { fontFamily: "monospace", fontSize: "0.85rem" } }}
+                              primaryTypographyProps={{ variant: "body2", whiteSpace: "pre-wrap" }}
                             />
                           </ListItem>
                         ))}
                       </List>
                     </Box>
                   )}
-                </Stack>
-              </Box>
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
 
-              {/* Coherence & Cohesion */}
-              <Box>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+              {/* Nested Accordion: Coherence & Cohesion */}
+              <Accordion defaultExpanded={false}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Chip label="CC" color="primary" size="small" />
-                    <span>Coherence & Cohesion</span>
+                    <Typography variant="subtitle2" fontWeight="bold">
+                      Coherence & Cohesion Analysis
+                    </Typography>
                   </Stack>
-                </Typography>
-
-                <Stack spacing={1.5}>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack spacing={1.5}>
                   <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
                     <Typography variant="caption" color="text.secondary" fontWeight="bold">
                       Topic Sentence Analysis:
@@ -338,42 +362,26 @@ export function ParagraphAnalysisView({
                             </ListItemIcon>
                             <ListItemText
                               primary={step}
-                              primaryTypographyProps={{ variant: "body2", sx: { fontFamily: "monospace", fontSize: "0.85rem" } }}
+                              primaryTypographyProps={{ variant: "body2", whiteSpace: "pre-wrap" }}
                             />
                           </ListItem>
                         ))}
                       </List>
                     </Box>
                   )}
-                </Stack>
-              </Box>
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
 
-              {/* Additional Analysis */}
-              <Divider sx={{ my: 2 }} />
-
-              <Box>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                  Additional Analysis
-                </Typography>
-
-                <Stack spacing={1.5}>
-                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
-                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Sentence Structures:
-                    </Typography>
-                    <Typography variant="body2">{para.sentenceStructures}</Typography>
-                  </Paper>
-
-                  {para.comparativeFeedback && (
-                    <Paper sx={{ p: 1.5, bgcolor: "#f3e5f5", border: "1px solid #ba68c8" }}>
-                      <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                        Comparative Feedback:
-                      </Typography>
-                      <Typography variant="body2">{para.comparativeFeedback}</Typography>
-                    </Paper>
-                  )}
-                </Stack>
-              </Box>
+              {/* Sentence Structures - Only if content is relevant to TR/CC */}
+              {para.sentenceStructures && (
+                <Paper sx={{ p: 2, bgcolor: "#fafafa" }}>
+                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                    Sentence Structures Impact on TR/CC
+                  </Typography>
+                  <Typography variant="body2">{para.sentenceStructures}</Typography>
+                </Paper>
+              )}
             </Stack>
           </AccordionDetails>
         </Accordion>
