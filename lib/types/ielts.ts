@@ -40,16 +40,32 @@ export interface ParagraphAnalysis {
   paragraphNumber: number;
   text: string;
   taskAchievement: {
-    addressesPrompt: boolean;
-    explanation: string;
-    suggestions: string[];
+    mainIdea: string;
+    ideaDevelopment: string;
+    relevanceToPrompt: string;
+    specificity: string;
+    supportingEvidence: string;
+    depthAnalysis: string;
+    strengths: string[];
+    weaknesses: string[];
+    bandImpact: string;
+    improvementSteps: string[];
   };
   coherenceCohesion: {
-    hasTopicSentence: boolean;
-    transitions: string; // Quality of transitions
-    logicalFlow: string;
-    suggestions: string[];
+    topicSentenceAnalysis: string;
+    ideaProgression: string;
+    cohesiveDevices: string;
+    cohesionIssues: string[];
+    paragraphUnity: string;
+    transitionQuality: string;
+    strengths: string[];
+    weaknesses: string[];
+    bandImpact: string;
+    improvementSteps: string[];
   };
+  sentenceStructures: string;
+  overallParagraphBand: string;
+  comparativeFeedback: string;
 }
 
 // Band score with evidence

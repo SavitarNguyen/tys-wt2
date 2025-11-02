@@ -12,6 +12,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Divider,
 } from "@mui/material";
 import {
   ExpandMore,
@@ -62,12 +63,19 @@ export function ParagraphAnalysisView({
       {paragraphs.map((para) => (
         <Accordion key={para.paragraphNumber} defaultExpanded={para.paragraphNumber <= 2}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography variant="subtitle1" fontWeight="bold">
-              Paragraph {para.paragraphNumber}
-              {(!para.taskAchievement.addressesPrompt || !para.coherenceCohesion.hasTopicSentence) && (
-                <Warning sx={{ ml: 1, color: "warning.main", fontSize: 20 }} />
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="subtitle1" fontWeight="bold">
+                Paragraph {para.paragraphNumber}
+              </Typography>
+              {para.overallParagraphBand && (
+                <Chip
+                  label={para.overallParagraphBand}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
               )}
-            </Typography>
+            </Stack>
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
@@ -82,104 +90,289 @@ export function ParagraphAnalysisView({
               <Box>
                 <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    {para.taskAchievement.addressesPrompt ? (
-                      <CheckCircle sx={{ color: "success.main" }} />
-                    ) : (
-                      <ErrorIcon sx={{ color: "error.main" }} />
-                    )}
+                    <Chip label="TR" color="primary" size="small" />
                     <span>Task Achievement</span>
                   </Stack>
                 </Typography>
 
-                <Alert
-                  severity={para.taskAchievement.addressesPrompt ? "success" : "warning"}
-                  sx={{ mb: 1 }}
-                >
-                  {para.taskAchievement.explanation}
-                </Alert>
-
-                {para.taskAchievement.suggestions.length > 0 && (
-                  <Box sx={{ ml: 2 }}>
-                    <Typography variant="caption" fontWeight="bold" color="text.secondary">
-                      Suggestions:
+                <Stack spacing={1.5}>
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Main Idea:
                     </Typography>
-                    <List dense>
-                      {para.taskAchievement.suggestions.map((suggestion, idx) => (
-                        <ListItem key={idx} sx={{ py: 0 }}>
-                          <ListItemIcon sx={{ minWidth: 32 }}>
-                            <Lightbulb sx={{ fontSize: 16, color: "warning.main" }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={suggestion}
-                            primaryTypographyProps={{ variant: "body2" }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                )}
+                    <Typography variant="body2">{para.taskAchievement.mainIdea}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Idea Development:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.ideaDevelopment}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Relevance to Prompt:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.relevanceToPrompt}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Specificity:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.specificity}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Supporting Evidence:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.supportingEvidence}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Depth Analysis:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.depthAnalysis}</Typography>
+                  </Paper>
+
+                  {para.taskAchievement.strengths.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="success.main">
+                        Strengths:
+                      </Typography>
+                      <List dense>
+                        {para.taskAchievement.strengths.map((strength, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <CheckCircle sx={{ fontSize: 16, color: "success.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={strength}
+                              primaryTypographyProps={{ variant: "body2" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  {para.taskAchievement.weaknesses.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="error.main">
+                        Weaknesses:
+                      </Typography>
+                      <List dense>
+                        {para.taskAchievement.weaknesses.map((weakness, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <Warning sx={{ fontSize: 16, color: "error.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={weakness}
+                              primaryTypographyProps={{ variant: "body2" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fff3e0", border: "1px solid #ffb74d" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Band Impact:
+                    </Typography>
+                    <Typography variant="body2">{para.taskAchievement.bandImpact}</Typography>
+                  </Paper>
+
+                  {para.taskAchievement.improvementSteps.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="primary.main">
+                        Improvement Steps:
+                      </Typography>
+                      <List dense>
+                        {para.taskAchievement.improvementSteps.map((step, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <Lightbulb sx={{ fontSize: 16, color: "warning.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={step}
+                              primaryTypographyProps={{ variant: "body2", sx: { fontFamily: "monospace", fontSize: "0.85rem" } }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+                </Stack>
               </Box>
 
               {/* Coherence & Cohesion */}
               <Box>
                 <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    {para.coherenceCohesion.hasTopicSentence ? (
-                      <CheckCircle sx={{ color: "success.main" }} />
-                    ) : (
-                      <ErrorIcon sx={{ color: "error.main" }} />
-                    )}
+                    <Chip label="CC" color="primary" size="small" />
                     <span>Coherence & Cohesion</span>
                   </Stack>
                 </Typography>
 
-                <Stack spacing={1}>
+                <Stack spacing={1.5}>
                   <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
                     <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Topic Sentence:
+                      Topic Sentence Analysis:
                     </Typography>
-                    <Typography variant="body2">
-                      {para.coherenceCohesion.hasTopicSentence
-                        ? "✓ Present"
-                        : "✗ Missing - Add a clear topic sentence"}
-                    </Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.topicSentenceAnalysis}</Typography>
                   </Paper>
 
                   <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
                     <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Transitions:
+                      Idea Progression:
                     </Typography>
-                    <Typography variant="body2">{para.coherenceCohesion.transitions}</Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.ideaProgression}</Typography>
                   </Paper>
 
                   <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
                     <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Logical Flow:
+                      Cohesive Devices:
                     </Typography>
-                    <Typography variant="body2">{para.coherenceCohesion.logicalFlow}</Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.cohesiveDevices}</Typography>
                   </Paper>
+
+                  {para.coherenceCohesion.cohesionIssues.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="error.main">
+                        Cohesion Issues:
+                      </Typography>
+                      <List dense>
+                        {para.coherenceCohesion.cohesionIssues.map((issue, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <Warning sx={{ fontSize: 16, color: "error.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={issue}
+                              primaryTypographyProps={{ variant: "body2" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Paragraph Unity:
+                    </Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.paragraphUnity}</Typography>
+                  </Paper>
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Transition Quality:
+                    </Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.transitionQuality}</Typography>
+                  </Paper>
+
+                  {para.coherenceCohesion.strengths.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="success.main">
+                        Strengths:
+                      </Typography>
+                      <List dense>
+                        {para.coherenceCohesion.strengths.map((strength, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <CheckCircle sx={{ fontSize: 16, color: "success.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={strength}
+                              primaryTypographyProps={{ variant: "body2" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  {para.coherenceCohesion.weaknesses.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="error.main">
+                        Weaknesses:
+                      </Typography>
+                      <List dense>
+                        {para.coherenceCohesion.weaknesses.map((weakness, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <Warning sx={{ fontSize: 16, color: "error.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={weakness}
+                              primaryTypographyProps={{ variant: "body2" }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  <Paper sx={{ p: 1.5, bgcolor: "#e3f2fd", border: "1px solid #64b5f6" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Band Impact:
+                    </Typography>
+                    <Typography variant="body2">{para.coherenceCohesion.bandImpact}</Typography>
+                  </Paper>
+
+                  {para.coherenceCohesion.improvementSteps.length > 0 && (
+                    <Box>
+                      <Typography variant="caption" fontWeight="bold" color="primary.main">
+                        Improvement Steps:
+                      </Typography>
+                      <List dense>
+                        {para.coherenceCohesion.improvementSteps.map((step, idx) => (
+                          <ListItem key={idx} sx={{ py: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <Lightbulb sx={{ fontSize: 16, color: "warning.main" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={step}
+                              primaryTypographyProps={{ variant: "body2", sx: { fontFamily: "monospace", fontSize: "0.85rem" } }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
                 </Stack>
+              </Box>
 
-                {para.coherenceCohesion.suggestions.length > 0 && (
-                  <Box sx={{ ml: 2, mt: 1 }}>
-                    <Typography variant="caption" fontWeight="bold" color="text.secondary">
-                      Suggestions:
+              {/* Additional Analysis */}
+              <Divider sx={{ my: 2 }} />
+
+              <Box>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Additional Analysis
+                </Typography>
+
+                <Stack spacing={1.5}>
+                  <Paper sx={{ p: 1.5, bgcolor: "#fafafa" }}>
+                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                      Sentence Structures:
                     </Typography>
-                    <List dense>
-                      {para.coherenceCohesion.suggestions.map((suggestion, idx) => (
-                        <ListItem key={idx} sx={{ py: 0 }}>
-                          <ListItemIcon sx={{ minWidth: 32 }}>
-                            <Lightbulb sx={{ fontSize: 16, color: "warning.main" }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={suggestion}
-                            primaryTypographyProps={{ variant: "body2" }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                )}
+                    <Typography variant="body2">{para.sentenceStructures}</Typography>
+                  </Paper>
+
+                  {para.comparativeFeedback && (
+                    <Paper sx={{ p: 1.5, bgcolor: "#f3e5f5", border: "1px solid #ba68c8" }}>
+                      <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                        Comparative Feedback:
+                      </Typography>
+                      <Typography variant="body2">{para.comparativeFeedback}</Typography>
+                    </Paper>
+                  )}
+                </Stack>
               </Box>
             </Stack>
           </AccordionDetails>

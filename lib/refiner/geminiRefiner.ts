@@ -71,7 +71,12 @@ async function handleIELTSModeInteractive(
 ): Promise<string> {
   const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Return a JSON object with comprehensive sentence-level feedback.
 
-CRITICAL: Your response must be ONLY valid JSON, nothing else.
+CRITICAL INSTRUCTIONS:
+1. Your response MUST be ONLY valid, complete JSON - no markdown, no explanations, no truncation
+2. ALWAYS close all JSON brackets and quotes properly
+3. Ensure all string values are properly escaped (use \\" for quotes inside strings)
+4. If running out of space, prioritize completing the JSON structure over adding more detail
+5. The JSON must parse without errors
 
 {
   "topic": "Essay topic",
@@ -134,16 +139,32 @@ CRITICAL: Your response must be ONLY valid JSON, nothing else.
       "paragraphNumber": 1,
       "text": "Full paragraph",
       "taskAchievement": {
-        "addressesPrompt": true,
-        "explanation": "Assessment",
-        "suggestions": ["Tip 1"]
+        "mainIdea": "What this paragraph argues",
+        "ideaDevelopment": "How ideas are developed",
+        "relevanceToPrompt": "How it addresses the question",
+        "specificity": "Level of detail and examples",
+        "supportingEvidence": "Quote examples used",
+        "depthAnalysis": "How deeply explored",
+        "strengths": ["Strength 1", "Strength 2"],
+        "weaknesses": ["Weakness 1"],
+        "bandImpact": "How this affects TR band",
+        "improvementSteps": ["BEFORE: [quote] → AFTER: [revised quote] (Why: explanation)"]
       },
       "coherenceCohesion": {
-        "hasTopicSentence": true,
-        "transitions": "Assessment",
-        "logicalFlow": "Assessment",
-        "suggestions": ["Tip 1"]
-      }
+        "topicSentenceAnalysis": "Quality of topic sentence",
+        "ideaProgression": "How ideas flow",
+        "cohesiveDevices": "Linking words analysis",
+        "cohesionIssues": ["Issue 1 with quote"],
+        "paragraphUnity": "How unified the paragraph is",
+        "transitionQuality": "Quality of transitions",
+        "strengths": ["Strength 1"],
+        "weaknesses": ["Weakness 1"],
+        "bandImpact": "How this affects CC band",
+        "improvementSteps": ["BEFORE: [quote] → AFTER: [revised quote] (Why: explanation)"]
+      },
+      "sentenceStructures": "Analysis of sentence variety",
+      "overallParagraphBand": "Estimated band for this paragraph",
+      "comparativeFeedback": "How this compares to other paragraphs"
     }
   ],
   "overallTA": "Overall task achievement",
@@ -190,6 +211,41 @@ TECHNICAL REQUIREMENTS:
 4. wordCorrections types: "deletion", "replacement", "addition"
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
+
+PARAGRAPH ANALYSIS - COMPREHENSIVE REQUIREMENTS:
+
+For EACH paragraph, provide detailed, quote-specific analysis:
+
+**Task Achievement Analysis:**
+- mainIdea: Identify the central argument (quote the topic sentence or key claim)
+- ideaDevelopment: How the idea is expanded (quote supporting sentences, note if sufficient/insufficient)
+- relevanceToPrompt: Direct connection to essay question (quote relevant phrases)
+- specificity: Level of concrete detail vs vague generalization (quote examples)
+- supportingEvidence: Quality and quantity of examples/data (quote all evidence provided)
+- depthAnalysis: Surface-level vs in-depth exploration (analyze complexity)
+- strengths: What works well (quote specific successful parts)
+- weaknesses: What needs improvement (quote problematic parts)
+- bandImpact: How this paragraph affects TR score (reference band descriptors)
+- improvementSteps: Actionable revisions with BEFORE/AFTER examples:
+  * Format: "BEFORE: [exact quote] → AFTER: [improved version] (Why: [explanation])"
+  * Include at least 2-3 concrete improvement steps
+
+**Coherence & Cohesion Analysis:**
+- topicSentenceAnalysis: Evaluate clarity and effectiveness (quote it, assess quality)
+- ideaProgression: How ideas connect and build (trace logical flow, identify gaps)
+- cohesiveDevices: Linking words used (quote all transitions, evaluate appropriateness)
+- cohesionIssues: Specific problems (quote examples of unclear references, poor transitions)
+- paragraphUnity: Single focus vs topic drift (identify any off-topic sentences)
+- transitionQuality: Between sentences and to next paragraph (quote transitions, rate effectiveness)
+- strengths: What works well (quote successful cohesive devices)
+- weaknesses: What needs improvement (quote problematic areas)
+- bandImpact: How this affects CC score
+- improvementSteps: Actionable revisions with BEFORE/AFTER examples
+
+**Additional Analysis:**
+- sentenceStructures: Variety assessment (simple/compound/complex ratio, sophistication level)
+- overallParagraphBand: Estimated band (e.g., "Band 6.5-7.0: Good TR but weak CC")
+- comparativeFeedback: How this paragraph compares to others in quality/effectiveness
 
 ERROR EXAMPLE (actual grammar mistake):
 originalSentence: "He go to school yesterday"
@@ -488,7 +544,8 @@ ${text}`;
     const geminiModel = genAI.getGenerativeModel({
       model,
       generationConfig: {
-        responseMimeType: "application/json"
+        responseMimeType: "application/json",
+        maxOutputTokens: 16384  // Increased for comprehensive feedback with longer essays
       }
     });
 
