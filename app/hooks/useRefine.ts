@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import {
   instructionNamesAtom,
+  isIELTSModeAtom,
   loadingAtom,
   refinedAtom,
   resultAtom,
@@ -14,15 +15,22 @@ export function useRefine() {
   const [, setLoading] = useAtom(loadingAtom);
   const [, setResult] = useAtom(resultAtom);
   const [, setRefined] = useAtom(refinedAtom);
+  const [, setIsIELTSMode] = useAtom(isIELTSModeAtom);
 
   return async function refine() {
     if (text.trim().length === 0) {
       setRefined("");
       setResult([]);
+      setIsIELTSMode(false);
       return;
     }
     setResult([]);
     setLoading(true);
+    
+    // Check if IELTS mode is active
+    const isIELTS = instructionNames.includes("ielts");
+    setIsIELTSMode(isIELTS);
+    
     const result = await fetch("api/v1/refine", {
       method: "POST",
       headers: {
@@ -32,7 +40,15 @@ export function useRefine() {
     });
     const localRefined = (await result.json())["refined"];
     setRefined(localRefined);
-    setResult(compareStrings(text, localRefined));
+    
+    // For IELTS mode, we'll handle the rendering in RefinedArea
+    // For regular mode, use diff view
+    if (!isIELTS) {
+      setResult(compareStrings(text, localRefined));
+    } else {
+      // For IELTS mode, set empty result since we'll render from refinedAtom
+      setResult([]);
+    }
     setLoading(false);
   };
 }

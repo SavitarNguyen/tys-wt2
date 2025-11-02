@@ -13,3 +13,4 @@ export const showDiffAtom = atomWithStorage("showDiff", true);
 
 export const resultAtom = atom<JSX.Element[]>([]);
 export const refinedAtom = atom("");
+export const isIELTSModeAtom = atom(false);

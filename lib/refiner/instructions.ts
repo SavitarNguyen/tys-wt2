@@ -1,4 +1,5 @@
 export type InstructionName =
+  | "ielts"
   | "formal"
   | "casual"
   | "friendly"
@@ -30,6 +31,18 @@ export interface Instruction {
 }
 
 export const instructionGroups: InstructionGroup[] = [
+  {
+    groupName: "AI Corrector",
+    emoji: "🤖",
+    instructions: [
+      {
+        name: "ielts",
+        title: "IELTS Feedback",
+        prompt: "Provide comprehensive IELTS Writing Task 2 feedback with band scores, detailed feedback, corrections, and sample model answer.",
+        emoji: "📝",
+      },
+    ],
+  },
   {
     groupName: "Tone",
     emoji: "🎭",
