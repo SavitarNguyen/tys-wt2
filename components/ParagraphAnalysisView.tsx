@@ -69,7 +69,7 @@ export function ParagraphAnalysisView({
               </Typography>
               {para.overallParagraphBand && (
                 <Chip
-                  label={para.overallParagraphBand}
+                  label={para.overallParagraphBand.match(/Band\s+[\d.]+/i)?.[0] || para.overallParagraphBand}
                   size="small"
                   color="primary"
                   variant="outlined"
@@ -79,29 +79,45 @@ export function ParagraphAnalysisView({
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
-              {/* Paragraph Text */}
-              <Paper sx={{ p: 2, bgcolor: "#f5f5f5" }}>
-                <Typography variant="body2" sx={{ fontStyle: "italic", lineHeight: 1.8 }}>
-                  {para.text}
+              {/* Original Text */}
+              <Box>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                  Original Text
                 </Typography>
-              </Paper>
-
-              {/* Overall Band & Comparative Feedback - Always Visible */}
-              {para.overallParagraphBand && (
-                <Paper sx={{ p: 2, bgcolor: "#fff3e0", border: "1px solid #ffb74d" }}>
-                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                    Overall Paragraph Band
+                <Paper sx={{ p: 2, bgcolor: "#f5f5f5" }}>
+                  <Typography variant="body2" sx={{ fontStyle: "italic", lineHeight: 1.8 }}>
+                    {para.text}
                   </Typography>
-                  <Typography variant="body2">{para.overallParagraphBand}</Typography>
                 </Paper>
-              )}
+              </Box>
 
-              {para.comparativeFeedback && (
+              {/* Comparative Feedback & Band Impacts - Always Visible */}
+              {(para.comparativeFeedback || para.taskAchievement.bandImpact || para.coherenceCohesion.bandImpact) && (
                 <Paper sx={{ p: 2, bgcolor: "#f3e5f5", border: "1px solid #ba68c8" }}>
                   <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                    Comparative Feedback
+                    Comparative Feedback & Band Impacts
                   </Typography>
-                  <Typography variant="body2">{para.comparativeFeedback}</Typography>
+                  <Stack spacing={1.5}>
+                    {para.comparativeFeedback && (
+                      <Typography variant="body2">{para.comparativeFeedback}</Typography>
+                    )}
+                    {para.taskAchievement.bandImpact && (
+                      <Box>
+                        <Typography variant="caption" fontWeight="bold" color="text.secondary">
+                          TR Band Impact:
+                        </Typography>
+                        <Typography variant="body2">{para.taskAchievement.bandImpact}</Typography>
+                      </Box>
+                    )}
+                    {para.coherenceCohesion.bandImpact && (
+                      <Box>
+                        <Typography variant="caption" fontWeight="bold" color="text.secondary">
+                          CC Band Impact:
+                        </Typography>
+                        <Typography variant="body2">{para.coherenceCohesion.bandImpact}</Typography>
+                      </Box>
+                    )}
+                  </Stack>
                 </Paper>
               )}
 
@@ -113,6 +129,13 @@ export function ParagraphAnalysisView({
                     <Typography variant="subtitle2" fontWeight="bold">
                       Task Achievement Analysis
                     </Typography>
+                    {para.taskAchievement.bandImpact && (
+                      <Chip
+                        label={para.taskAchievement.bandImpact.match(/Band\s+[\d.]+/i)?.[0] || para.taskAchievement.bandImpact}
+                        size="small"
+                        sx={{ bgcolor: "#fff3e0", color: "#e65100" }}
+                      />
+                    )}
                   </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -201,13 +224,6 @@ export function ParagraphAnalysisView({
                     </Box>
                   )}
 
-                  <Paper sx={{ p: 1.5, bgcolor: "#fff3e0", border: "1px solid #ffb74d" }}>
-                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Band Impact:
-                    </Typography>
-                    <Typography variant="body2">{para.taskAchievement.bandImpact}</Typography>
-                  </Paper>
-
                   {para.taskAchievement.improvementSteps.length > 0 && (
                     <Box>
                       <Typography variant="caption" fontWeight="bold" color="primary.main">
@@ -240,6 +256,13 @@ export function ParagraphAnalysisView({
                     <Typography variant="subtitle2" fontWeight="bold">
                       Coherence & Cohesion Analysis
                     </Typography>
+                    {para.coherenceCohesion.bandImpact && (
+                      <Chip
+                        label={para.coherenceCohesion.bandImpact.match(/Band\s+[\d.]+/i)?.[0] || para.coherenceCohesion.bandImpact}
+                        size="small"
+                        sx={{ bgcolor: "#e3f2fd", color: "#0277bd" }}
+                      />
+                    )}
                   </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -342,13 +365,6 @@ export function ParagraphAnalysisView({
                     </Box>
                   )}
 
-                  <Paper sx={{ p: 1.5, bgcolor: "#e3f2fd", border: "1px solid #64b5f6" }}>
-                    <Typography variant="caption" color="text.secondary" fontWeight="bold">
-                      Band Impact:
-                    </Typography>
-                    <Typography variant="body2">{para.coherenceCohesion.bandImpact}</Typography>
-                  </Paper>
-
                   {para.coherenceCohesion.improvementSteps.length > 0 && (
                     <Box>
                       <Typography variant="caption" fontWeight="bold" color="primary.main">
@@ -372,16 +388,6 @@ export function ParagraphAnalysisView({
                   </Stack>
                 </AccordionDetails>
               </Accordion>
-
-              {/* Sentence Structures - Only if content is relevant to TR/CC */}
-              {para.sentenceStructures && (
-                <Paper sx={{ p: 2, bgcolor: "#fafafa" }}>
-                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                    Sentence Structures Impact on TR/CC
-                  </Typography>
-                  <Typography variant="body2">{para.sentenceStructures}</Typography>
-                </Paper>
-              )}
             </Stack>
           </AccordionDetails>
         </Accordion>

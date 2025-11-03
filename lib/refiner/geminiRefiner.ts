@@ -545,7 +545,7 @@ ${text}`;
       model,
       generationConfig: {
         responseMimeType: "application/json",
-        maxOutputTokens: 16384  // Increased for comprehensive feedback with longer essays
+        maxOutputTokens: 65536  // Increased for comprehensive feedback with longer essays
       }
     });
 
