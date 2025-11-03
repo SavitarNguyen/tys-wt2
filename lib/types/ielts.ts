@@ -35,38 +35,33 @@ export interface SentenceFeedback {
   criteria: IELTSCriterion[]; // Which criteria this affects
 }
 
+// Paragraph issue/error detail (similar to ErrorDetail for sentences)
+export interface ParagraphIssue {
+  criterion: "TR" | "CC"; // Task Response or Coherence & Cohesion
+  type: string; // e.g., "Vague Main Idea", "Weak Evidence", "Poor Transitions"
+  issue: string; // What's the problem
+  explanation: string; // Why it's problematic
+  howToRevise: string; // How to fix it
+  quote?: string; // Optional: specific quote from paragraph
+}
+
+// Paragraph improvement suggestion (not an error, but could be better)
+export interface ParagraphImprovement {
+  type: string; // e.g., "Idea Development", "Evidence Quality"
+  current: string; // What the student currently has
+  suggestion: string; // What could make it better
+  explanation: string; // Why the suggestion helps
+  bandImpact: string; // e.g., "Could move from Band 6 to 6.5-7"
+}
+
 // Paragraph-level analysis
 export interface ParagraphAnalysis {
   paragraphNumber: number;
   text: string;
   revisedParagraph: string; // Idea-focused revision based on improvement steps
-  taskAchievement: {
-    mainIdea: string;
-    ideaDevelopment: string;
-    relevanceToPrompt: string;
-    specificity: string;
-    supportingEvidence: string;
-    depthAnalysis: string;
-    strengths: string[];
-    weaknesses: string[];
-    bandImpact: string;
-    improvementSteps: string[];
-  };
-  coherenceCohesion: {
-    topicSentenceAnalysis: string;
-    ideaProgression: string;
-    cohesiveDevices: string;
-    cohesionIssues: string[];
-    paragraphUnity: string;
-    transitionQuality: string;
-    strengths: string[];
-    weaknesses: string[];
-    bandImpact: string;
-    improvementSteps: string[];
-  };
-  sentenceStructures: string;
   overallParagraphBand: string;
-  comparativeFeedback: string;
+  issues: ParagraphIssue[]; // Red boxes - errors and bad ideas
+  improvements: ParagraphImprovement[]; // Yellow boxes - upgrade opportunities
 }
 
 // Band score with evidence

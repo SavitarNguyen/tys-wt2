@@ -10,6 +10,21 @@ interface ParagraphWithDiffProps {
 
 // Simple sentence-level diff function
 function getSentenceLevelDiff(original: string, revised: string) {
+  // If they're the same, no diff needed
+  if (original === revised) {
+    const splitSentences = (text: string) => {
+      return text
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+    };
+    const sentences = splitSentences(original);
+    return {
+      originalMarked: sentences.map(s => ({ text: s, status: 'kept' as 'kept' })),
+      revisedMarked: sentences.map(s => ({ text: s, status: 'kept' as 'kept' }))
+    };
+  }
+
   // Split into sentences - simple approach using period, question mark, exclamation mark
   const splitSentences = (text: string) => {
     return text
@@ -23,18 +38,30 @@ function getSentenceLevelDiff(original: string, revised: string) {
 
   // Find sentences that appear in both (approximately - using substring matching)
   const commonSentences = new Set<string>();
+  const matchedRevised = new Set<number>();
 
   originalSentences.forEach(origSent => {
-    revisedSentences.forEach(revSent => {
-      // If 70% of words match, consider it the same sentence (modified)
+    revisedSentences.forEach((revSent, revIdx) => {
+      if (matchedRevised.has(revIdx)) return;
+
+      // Check for exact match first
+      if (origSent === revSent) {
+        commonSentences.add(origSent);
+        commonSentences.add(revSent);
+        matchedRevised.add(revIdx);
+        return;
+      }
+
+      // Then check for high similarity (lowered threshold to 60%)
       const origWords = origSent.toLowerCase().split(/\s+/);
       const revWords = revSent.toLowerCase().split(/\s+/);
       const commonWords = origWords.filter(w => revWords.includes(w));
       const similarity = commonWords.length / Math.max(origWords.length, revWords.length);
 
-      if (similarity > 0.7) {
+      if (similarity > 0.6) {
         commonSentences.add(origSent);
         commonSentences.add(revSent);
+        matchedRevised.add(revIdx);
       }
     });
   });
@@ -147,8 +174,8 @@ export function ParagraphWithDiff({
               variant="body2"
               sx={{
                 ...(item.status === 'added' && {
-                  backgroundColor: "#e8f5e9",
-                  color: "#2e7d32",
+                  backgroundColor: "#fff8e1",
+                  color: "#f57c00",
                   fontWeight: 500,
                   padding: "2px 4px",
                   borderRadius: "2px",

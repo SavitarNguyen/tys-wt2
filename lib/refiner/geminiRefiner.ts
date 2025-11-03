@@ -139,33 +139,34 @@ CRITICAL INSTRUCTIONS:
       "paragraphNumber": 1,
       "text": "Full paragraph",
       "revisedParagraph": "CONSERVATIVE revised paragraph that KEEPS good ideas unchanged and ONLY expands/clarifies weak ideas. Use student's exact vocabulary and grammar. Add simple, realistic explanations or examples appropriate for their band level. DO NOT upgrade to Band 9 quality - make realistic improvements (e.g., Band 6 → 6.5-7).",
-      "taskAchievement": {
-        "mainIdea": "What this paragraph argues",
-        "ideaDevelopment": "How ideas are developed",
-        "relevanceToPrompt": "How it addresses the question",
-        "specificity": "Level of detail and examples",
-        "supportingEvidence": "Quote examples used",
-        "depthAnalysis": "How deeply explored",
-        "strengths": ["Strength 1", "Strength 2"],
-        "weaknesses": ["Weakness 1"],
-        "bandImpact": "How this affects TR band",
-        "improvementSteps": ["BEFORE: [quote] → AFTER: [revised quote] (Why: explanation)"]
-      },
-      "coherenceCohesion": {
-        "topicSentenceAnalysis": "Quality of topic sentence",
-        "ideaProgression": "How ideas flow",
-        "cohesiveDevices": "Linking words analysis",
-        "cohesionIssues": ["Issue 1 with quote"],
-        "paragraphUnity": "How unified the paragraph is",
-        "transitionQuality": "Quality of transitions",
-        "strengths": ["Strength 1"],
-        "weaknesses": ["Weakness 1"],
-        "bandImpact": "How this affects CC band",
-        "improvementSteps": ["BEFORE: [quote] → AFTER: [revised quote] (Why: explanation)"]
-      },
-      "sentenceStructures": "Analysis of sentence variety",
-      "overallParagraphBand": "Estimated band for this paragraph",
-      "comparativeFeedback": "How this compares to other paragraphs"
+      "overallParagraphBand": "Band 6.5-7.0: Description of overall quality",
+      "issues": [
+        {
+          "criterion": "TR",
+          "type": "Vague Main Idea",
+          "issue": "Brief description of the problem",
+          "explanation": "Why this is problematic and how it affects the band score",
+          "howToRevise": "Concrete steps to fix this issue",
+          "quote": "Exact quote from paragraph (optional)"
+        },
+        {
+          "criterion": "CC",
+          "type": "Poor Transitions",
+          "issue": "Brief description of the problem",
+          "explanation": "Why this is problematic",
+          "howToRevise": "How to fix it",
+          "quote": "Exact quote (optional)"
+        }
+      ],
+      "improvements": [
+        {
+          "type": "Idea Development",
+          "current": "What the student currently has",
+          "suggestion": "How to make it stronger",
+          "explanation": "Why this helps improve the writing",
+          "bandImpact": "Could move from Band 6 to 6.5-7"
+        }
+      ]
     }
   ],
   "overallTA": "Overall task achievement",
@@ -213,79 +214,98 @@ TECHNICAL REQUIREMENTS:
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
 
-PARAGRAPH ANALYSIS - COMPREHENSIVE REQUIREMENTS:
+PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
-For EACH paragraph, provide detailed, quote-specific analysis:
+**CRITICAL: PARAGRAPH ANALYSIS SCOPE**
+Paragraph analysis focuses ONLY on TR (Task Response) and CC (Coherence & Cohesion) issues.
+**DO NOT include grammar or vocabulary issues in paragraph analysis** - these belong in sentence-level feedback only.
 
-**CRITICAL: revisedParagraph Field**
-Generate a CONSERVATIVE, REALISTIC revised version of the paragraph that:
-1. **KEEP ACCEPTABLE IDEAS UNCHANGED** - Only revise parts that negatively impact the band score
-2. **MATCH THE STUDENT'S CURRENT BAND LEVEL** - Improvements should be realistic for their level (e.g., Band 6 → Band 6.5-7, NOT Band 6 → Band 9)
-3. **STRICTLY PRESERVE VOCABULARY AND GRAMMAR** - Use the student's exact wording and grammatical style, even if imperfect
-4. ONLY revise when the original has these score-impacting issues:
-   - Vague or unclear main ideas that need clarification
-   - Underdeveloped ideas that need more explanation (not new ideas, but expanding existing ones)
-   - Missing or weak supporting evidence/examples
-   - Poor logical flow or idea progression between sentences
-   - Structural/organizational problems
+For EACH paragraph, provide:
 
-5. **HOW TO REVISE (Conservative Approach):**
-   - For vague statements: Add brief clarification or explanation using simple, realistic language
-   - For underdeveloped ideas: Expand with 1-2 sentences of explanation or a simple example
-   - For missing evidence: Add a realistic, level-appropriate example (not sophisticated research citations unless student is Band 8+)
-   - For flow issues: Reorder sentences or add simple transitional phrases
-   - DO NOT replace good ideas with "better" ideas
-   - DO NOT upgrade vocabulary or fix grammar
-   - DO NOT add overly sophisticated examples beyond the student's level
+**1. revisedParagraph Field (CONSERVATIVE IDEA-FOCUSED revision)**
+Generate a CONSERVATIVE, REALISTIC revised version that:
+- **KEEP ACCEPTABLE IDEAS UNCHANGED** - Only revise score-impacting IDEA issues
+- **MATCH STUDENT'S BAND LEVEL** - Realistic improvements (e.g., Band 6 → 6.5-7, NOT Band 6 → Band 9)
+- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style, but you must fix basic grammar and vocabulary mistakes
+- **ONLY ADD/EXPAND IDEAS** - Only revise: vague ideas, underdeveloped points, missing evidence, poor flow, structural issues
+- DO NOT fix grammar errors, DO NOT replace vocabulary, DO NOT correct spelling/punctuation
 
-6. The revised paragraph will be compared against the original to highlight:
-   - RED highlights: Weak/vague ideas that hurt the score
-   - GREEN highlights: Realistic expansions and clarifications at the student's level
+**CRITICAL: The revisedParagraph MUST reflect the changes from BOTH issues and improvements:**
+- **For ISSUES (red boxes)**: Remove or replace the problematic sentences mentioned in the "quote" field
+- **For IMPROVEMENTS (yellow boxes)**: Actually ADD the suggested sentences/ideas from the "suggestion" field into the revisedParagraph
+- The diff algorithm will automatically highlight removed sentences in red (in original) and added sentences in yellow (in revised)
+- Students should be able to see EXACTLY what to remove (red strikethrough in original) and what to add (yellow highlight in revised)
 
-**EXAMPLE of Conservative Revision (Band 6 student):**
+**2. overallParagraphBand**
+Estimated band with brief description (e.g., "Band 6.5-7.0: Good ideas but needs better development")
 
-ORIGINAL: "Social media causes problems. Many people waste time on it."
+**3. issues Array (RED BOXES - Problems that hurt the TR/CC score)**
+For EACH significant TR or CC problem in the paragraph, create an issue object:
+- criterion: "TR" or "CC" ONLY (NOT "GRA" or "LR")
+- type: TR types: "Vague Main Idea", "Weak Evidence", "Underdeveloped Idea", "Irrelevant Content", "Off-Topic"
+        CC types: "Poor Transitions", "Lack of Coherence", "Weak Paragraph Structure", "Unclear Logical Flow", "Missing Cohesive Devices"
+- issue: Brief, clear statement of the IDEA or COHERENCE problem (1 sentence)
+- explanation: Why this TR/CC issue is problematic and how it affects the band score (2-3 sentences)
+- howToRevise: Concrete, actionable steps to fix the IDEA or FLOW issue (2-3 sentences with specific guidance)
+- quote: (REQUIRED) Exact quote from paragraph showing the problematic sentence(s) - this sentence will be REMOVED or REPLACED in revisedParagraph and shown with red strikethrough in original
 
-❌ WRONG (Too sophisticated, Band 9 style):
-"Social media platforms present significant challenges to contemporary society. Research from Stanford University (2023) demonstrates that users spend an average of 3.5 hours daily, leading to decreased productivity."
+**EXAMPLES - CORRECT TR/CC ISSUES ONLY:**
 
-✅ CORRECT (Conservative, Band 6.5-7 improvement):
-"Social media causes problems. Many people waste time on it - for example, teenagers often spend 3-4 hours per day scrolling instead of studying. This excessive usage can lead to lower grades."
-(KEPT: "Social media causes problems. Many people waste time on it" - acceptable idea)
-(ADDED: Simple, realistic example and consequence at Band 6 level)
+**EXAMPLES of issues:**
 
-**Task Achievement Analysis:**
-- mainIdea: Identify the central argument (quote the topic sentence or key claim)
-- ideaDevelopment: How the idea is expanded (quote supporting sentences, note if sufficient/insufficient)
-- relevanceToPrompt: Direct connection to essay question (quote relevant phrases)
-- specificity: Level of concrete detail vs vague generalization (quote examples)
-- supportingEvidence: Quality and quantity of examples/data (quote all evidence provided)
-- depthAnalysis: Surface-level vs in-depth exploration (analyze complexity)
-- strengths: What works well (quote specific successful parts)
-- weaknesses: What needs improvement (quote problematic parts)
-- bandImpact: How this paragraph affects TR score (reference band descriptors)
-- improvementSteps: Actionable revisions with BEFORE/AFTER examples:
-  * Format: "BEFORE: [exact quote] → AFTER: [improved version] (Why: [explanation])"
-  * Include at least 2-3 concrete improvement steps
-  * These improvement steps will be used to generate the revisedParagraph
+TR Issue Example:
+{
+  "criterion": "TR",
+  "type": "Vague Main Idea",
+  "issue": "The main argument lacks clarity and specificity",
+  "explanation": "The paragraph states 'technology is important' without explaining which aspect of technology or why it matters. This vagueness prevents the reader from understanding your position clearly and limits your TR score to Band 6 or below.",
+  "howToRevise": "Specify WHICH technology you're discussing and WHY it's important. For example, instead of 'technology is important,' write 'smartphone technology is important because it enables instant communication across distances, which strengthens family relationships.'",
+  "quote": "I think technology is very important in modern life."
+}
 
-**Coherence & Cohesion Analysis:**
-- topicSentenceAnalysis: Evaluate clarity and effectiveness (quote it, assess quality)
-- ideaProgression: How ideas connect and build (trace logical flow, identify gaps)
-- cohesiveDevices: Linking words used (quote all transitions, evaluate appropriateness)
-- cohesionIssues: Specific problems (quote examples of unclear references, poor transitions)
-- paragraphUnity: Single focus vs topic drift (identify any off-topic sentences)
-- transitionQuality: Between sentences and to next paragraph (quote transitions, rate effectiveness)
-- strengths: What works well (quote successful cohesive devices)
-- weaknesses: What needs improvement (quote problematic areas)
-- bandImpact: How this affects CC score
-- improvementSteps: Actionable revisions with BEFORE/AFTER examples
-  * These improvement steps will be used to generate the revisedParagraph
+CC Issue Example:
+{
+  "criterion": "CC",
+  "type": "Poor Transitions",
+  "issue": "Ideas jump abruptly without logical connections",
+  "explanation": "The paragraph discusses education costs, then suddenly mentions job opportunities without explaining the connection. This disrupts the logical flow and makes it hard for readers to follow your argument, limiting CC to Band 6.",
+  "howToRevise": "Add a linking phrase to show the relationship. For example: 'Because of these high education costs, students must carefully consider future job opportunities that will help them repay their loans.' This creates a clear cause-effect connection.",
+  "quote": "University fees are expensive. Many graduates find good jobs."
+}
 
-**Additional Analysis:**
-- sentenceStructures: Variety assessment (simple/compound/complex ratio, sophistication level)
-- overallParagraphBand: Estimated band (e.g., "Band 6.5-7.0: Good TR but weak CC")
-- comparativeFeedback: How this paragraph compares to others in quality/effectiveness
+**4. improvements Array (YELLOW BOXES - Not wrong, but could be stronger for TR/CC)**
+For TR/CC aspects that are acceptable but could be developed further for higher bands:
+- type: TR types: "Idea Development", "Evidence Quality", "Depth of Analysis", "Specificity"
+        CC types: "Paragraph Structure Enhancement", "Cohesion Strengthening"
+- current: What the student currently has regarding IDEAS or FLOW (quote or paraphrase)
+- suggestion: How to make the IDEAS or FLOW stronger (specific, actionable advice with CONCRETE example sentences that will be added to revisedParagraph)
+- explanation: Why this helps improve TR or CC specifically
+- bandImpact: How much this could help (e.g., "Could move from Band 6 to 6.5-7")
+
+**CRITICAL: The suggestion field must contain the ACTUAL TEXT that appears in revisedParagraph**
+
+**EXAMPLE of improvement (TR-focused):**
+{
+  "type": "Idea Development",
+  "current": "You mention that 'social media connects people' but don't explain how",
+  "suggestion": "Add 1-2 sentences explaining the mechanism: 'Social media platforms like Facebook and WhatsApp allow families separated by distance to share photos, videos, and messages instantly. This regular contact helps maintain close relationships despite geographical barriers.'",
+  "explanation": "Adding this concrete explanation transforms a vague statement into a well-developed point with specific examples, showing deeper understanding of the topic",
+  "bandImpact": "Could move from Band 6 to 6.5-7 for TR"
+}
+
+**In the revisedParagraph, these exact sentences MUST be added:**
+Original: "Social media connects people."
+Revised: "Social media connects people. Social media platforms like Facebook and WhatsApp allow families separated by distance to share photos, videos, and messages instantly. This regular contact helps maintain close relationships despite geographical barriers."
+(The added sentences will be highlighted in yellow automatically)
+
+**IMPORTANT GUIDELINES:**
+- Focus on the MOST SIGNIFICANT TR/CC issues (2-4 per paragraph maximum)
+- **NEVER include grammar, vocabulary, spelling, or punctuation in paragraph analysis**
+- Grammar/vocabulary belong ONLY in sentence-level feedback
+- Be specific with quotes and examples about IDEAS and FLOW
+- Provide ACTIONABLE advice about IDEAS and COHERENCE, not language accuracy
+- Don't create "issues" for acceptable ideas - use "improvements" instead
+- Issues are for score-reducing TR/CC problems; improvements are for TR/CC enhancement opportunities
 
 ERROR EXAMPLE (actual grammar mistake):
 originalSentence: "He go to school yesterday"

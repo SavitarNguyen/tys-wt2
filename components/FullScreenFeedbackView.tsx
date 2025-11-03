@@ -56,6 +56,16 @@ export function FullScreenFeedbackView({
     setRightPanelTab(2); // Switch to paragraph analysis tab
   };
 
+  const handleParagraphNumberClick = (paragraphNumber: number) => {
+    // Find the index of the paragraph with this number
+    const index = feedback.paragraphs.findIndex(p => p.paragraphNumber === paragraphNumber);
+    if (index !== -1) {
+      setSelectedParagraphIndex(index);
+      // Scroll to the paragraph in the left panel if needed
+      // The left panel will update because selectedParagraphIndex changed
+    }
+  };
+
   const progressPercentage = (reviewedSentences.size / feedback.sentences.length) * 100;
 
   return (
@@ -248,9 +258,8 @@ export function FullScreenFeedbackView({
               <Box sx={{ p: 3 }}>
                 <ParagraphAnalysisView
                   paragraphs={feedback.paragraphs}
-                  overallTA={feedback.overallTA}
-                  overallCC={feedback.overallCC}
                   selectedParagraphNumber={selectedParagraphIndex !== null ? feedback.paragraphs[selectedParagraphIndex]?.paragraphNumber : null}
+                  onParagraphClick={handleParagraphNumberClick}
                 />
               </Box>
             )}
