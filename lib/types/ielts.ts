@@ -39,6 +39,7 @@ export interface SentenceFeedback {
 export interface ParagraphAnalysis {
   paragraphNumber: number;
   text: string;
+  revisedParagraph: string; // Idea-focused revision based on improvement steps
   taskAchievement: {
     mainIdea: string;
     ideaDevelopment: string;

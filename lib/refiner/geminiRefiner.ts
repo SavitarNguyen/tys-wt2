@@ -138,6 +138,7 @@ CRITICAL INSTRUCTIONS:
     {
       "paragraphNumber": 1,
       "text": "Full paragraph",
+      "revisedParagraph": "CONSERVATIVE revised paragraph that KEEPS good ideas unchanged and ONLY expands/clarifies weak ideas. Use student's exact vocabulary and grammar. Add simple, realistic explanations or examples appropriate for their band level. DO NOT upgrade to Band 9 quality - make realistic improvements (e.g., Band 6 → 6.5-7).",
       "taskAchievement": {
         "mainIdea": "What this paragraph argues",
         "ideaDevelopment": "How ideas are developed",
@@ -216,6 +217,43 @@ PARAGRAPH ANALYSIS - COMPREHENSIVE REQUIREMENTS:
 
 For EACH paragraph, provide detailed, quote-specific analysis:
 
+**CRITICAL: revisedParagraph Field**
+Generate a CONSERVATIVE, REALISTIC revised version of the paragraph that:
+1. **KEEP ACCEPTABLE IDEAS UNCHANGED** - Only revise parts that negatively impact the band score
+2. **MATCH THE STUDENT'S CURRENT BAND LEVEL** - Improvements should be realistic for their level (e.g., Band 6 → Band 6.5-7, NOT Band 6 → Band 9)
+3. **STRICTLY PRESERVE VOCABULARY AND GRAMMAR** - Use the student's exact wording and grammatical style, even if imperfect
+4. ONLY revise when the original has these score-impacting issues:
+   - Vague or unclear main ideas that need clarification
+   - Underdeveloped ideas that need more explanation (not new ideas, but expanding existing ones)
+   - Missing or weak supporting evidence/examples
+   - Poor logical flow or idea progression between sentences
+   - Structural/organizational problems
+
+5. **HOW TO REVISE (Conservative Approach):**
+   - For vague statements: Add brief clarification or explanation using simple, realistic language
+   - For underdeveloped ideas: Expand with 1-2 sentences of explanation or a simple example
+   - For missing evidence: Add a realistic, level-appropriate example (not sophisticated research citations unless student is Band 8+)
+   - For flow issues: Reorder sentences or add simple transitional phrases
+   - DO NOT replace good ideas with "better" ideas
+   - DO NOT upgrade vocabulary or fix grammar
+   - DO NOT add overly sophisticated examples beyond the student's level
+
+6. The revised paragraph will be compared against the original to highlight:
+   - RED highlights: Weak/vague ideas that hurt the score
+   - GREEN highlights: Realistic expansions and clarifications at the student's level
+
+**EXAMPLE of Conservative Revision (Band 6 student):**
+
+ORIGINAL: "Social media causes problems. Many people waste time on it."
+
+❌ WRONG (Too sophisticated, Band 9 style):
+"Social media platforms present significant challenges to contemporary society. Research from Stanford University (2023) demonstrates that users spend an average of 3.5 hours daily, leading to decreased productivity."
+
+✅ CORRECT (Conservative, Band 6.5-7 improvement):
+"Social media causes problems. Many people waste time on it - for example, teenagers often spend 3-4 hours per day scrolling instead of studying. This excessive usage can lead to lower grades."
+(KEPT: "Social media causes problems. Many people waste time on it" - acceptable idea)
+(ADDED: Simple, realistic example and consequence at Band 6 level)
+
 **Task Achievement Analysis:**
 - mainIdea: Identify the central argument (quote the topic sentence or key claim)
 - ideaDevelopment: How the idea is expanded (quote supporting sentences, note if sufficient/insufficient)
@@ -229,6 +267,7 @@ For EACH paragraph, provide detailed, quote-specific analysis:
 - improvementSteps: Actionable revisions with BEFORE/AFTER examples:
   * Format: "BEFORE: [exact quote] → AFTER: [improved version] (Why: [explanation])"
   * Include at least 2-3 concrete improvement steps
+  * These improvement steps will be used to generate the revisedParagraph
 
 **Coherence & Cohesion Analysis:**
 - topicSentenceAnalysis: Evaluate clarity and effectiveness (quote it, assess quality)
@@ -241,6 +280,7 @@ For EACH paragraph, provide detailed, quote-specific analysis:
 - weaknesses: What needs improvement (quote problematic areas)
 - bandImpact: How this affects CC score
 - improvementSteps: Actionable revisions with BEFORE/AFTER examples
+  * These improvement steps will be used to generate the revisedParagraph
 
 **Additional Analysis:**
 - sentenceStructures: Variety assessment (simple/compound/complex ratio, sophistication level)

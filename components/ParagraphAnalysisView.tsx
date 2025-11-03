@@ -27,12 +27,14 @@ interface ParagraphAnalysisViewProps {
   paragraphs: ParagraphAnalysis[];
   overallTA: string;
   overallCC: string;
+  selectedParagraphNumber?: number | null;
 }
 
 export function ParagraphAnalysisView({
   paragraphs,
   overallTA,
   overallCC,
+  selectedParagraphNumber,
 }: ParagraphAnalysisViewProps) {
   return (
     <Box>
@@ -61,7 +63,10 @@ export function ParagraphAnalysisView({
       </Typography>
 
       {paragraphs.map((para) => (
-        <Accordion key={para.paragraphNumber} defaultExpanded={para.paragraphNumber <= 2}>
+        <Accordion
+          key={para.paragraphNumber}
+          defaultExpanded={selectedParagraphNumber ? para.paragraphNumber === selectedParagraphNumber : para.paragraphNumber <= 2}
+        >
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Typography variant="subtitle1" fontWeight="bold">
@@ -79,18 +84,6 @@ export function ParagraphAnalysisView({
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
-              {/* Original Text */}
-              <Box>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
-                  Original Text
-                </Typography>
-                <Paper sx={{ p: 2, bgcolor: "#f5f5f5" }}>
-                  <Typography variant="body2" sx={{ fontStyle: "italic", lineHeight: 1.8 }}>
-                    {para.text}
-                  </Typography>
-                </Paper>
-              </Box>
-
               {/* Comparative Feedback & Band Impacts - Always Visible */}
               {(para.comparativeFeedback || para.taskAchievement.bandImpact || para.coherenceCohesion.bandImpact) && (
                 <Paper sx={{ p: 2, bgcolor: "#f3e5f5", border: "1px solid #ba68c8" }}>

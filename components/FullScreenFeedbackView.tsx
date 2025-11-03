@@ -24,6 +24,7 @@ import { SentenceWithCorrections } from "./SentenceWithCorrections";
 import { SentenceFeedbackPanel } from "./SentenceFeedbackPanel";
 import { ParagraphAnalysisView } from "./ParagraphAnalysisView";
 import { BandScoresWithEvidence } from "./BandScoresWithEvidence";
+import { ParagraphWithDiff } from "./ParagraphWithDiff";
 
 interface FullScreenFeedbackViewProps {
   feedback: IELTSFeedback;
@@ -39,6 +40,7 @@ export function FullScreenFeedbackView({
   const [selectedSentenceIndex, setSelectedSentenceIndex] = useState<number | null>(null);
   const [reviewedSentences, setReviewedSentences] = useState<Set<string>>(new Set());
   const [rightPanelTab, setRightPanelTab] = useState<number>(0);
+  const [selectedParagraphIndex, setSelectedParagraphIndex] = useState<number | null>(null);
 
   const handleSentenceClick = (index: number) => {
     setSelectedSentenceIndex(index);
@@ -47,6 +49,11 @@ export function FullScreenFeedbackView({
     // Mark as reviewed
     const sentenceId = feedback.sentences[index].id;
     setReviewedSentences((prev) => new Set(prev).add(sentenceId));
+  };
+
+  const handleParagraphClick = (index: number) => {
+    setSelectedParagraphIndex(index);
+    setRightPanelTab(2); // Switch to paragraph analysis tab
   };
 
   const progressPercentage = (reviewedSentences.size / feedback.sentences.length) * 100;
@@ -122,21 +129,46 @@ export function FullScreenFeedbackView({
         >
           <Box sx={{ p: 2, bgcolor: "grey.50", borderBottom: "1px solid", borderColor: "divider" }}>
             <Typography variant="h6" gutterBottom>
-              Your Essay
+              {rightPanelTab === 2 ? "Paragraphs" : rightPanelTab === 1 ? "Your Essay" : "Your Essay"}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Click any sentence to see detailed feedback →
+              {rightPanelTab === 2
+                ? "Click any paragraph to see detailed analysis →"
+                : rightPanelTab === 1
+                ? "Original essay for reference"
+                : "Click any sentence to see detailed feedback →"}
             </Typography>
           </Box>
 
           <Box sx={{ flex: 1, overflow: "auto", p: 3 }}>
-            {feedback.sentences.map((sentence, index) => (
+            {/* Tab 0: Sentence Feedback - Show sentences with corrections */}
+            {rightPanelTab === 0 && feedback.sentences.map((sentence, index) => (
               <SentenceWithCorrections
                 key={sentence.id}
                 sentence={sentence}
                 isSelected={selectedSentenceIndex === index}
                 isReviewed={reviewedSentences.has(sentence.id)}
                 onClick={() => handleSentenceClick(index)}
+              />
+            ))}
+
+            {/* Tab 1: Band Scores - Show original essay */}
+            {rightPanelTab === 1 && (
+              <Box>
+                <Typography variant="body1" sx={{ lineHeight: 2, whiteSpace: "pre-wrap" }}>
+                  {feedback.sentences.map(s => s.originalSentence).join(" ")}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Tab 2: Paragraph Analysis - Show paragraphs with diff */}
+            {rightPanelTab === 2 && feedback.paragraphs.map((paragraph, index) => (
+              <ParagraphWithDiff
+                key={paragraph.paragraphNumber}
+                paragraph={paragraph}
+                sentences={feedback.sentences}
+                isSelected={selectedParagraphIndex === index}
+                onClick={() => handleParagraphClick(index)}
               />
             ))}
           </Box>
@@ -219,6 +251,7 @@ export function FullScreenFeedbackView({
                   paragraphs={feedback.paragraphs}
                   overallTA={feedback.overallTA}
                   overallCC={feedback.overallCC}
+                  selectedParagraphNumber={selectedParagraphIndex !== null ? feedback.paragraphs[selectedParagraphIndex]?.paragraphNumber : null}
                 />
               </Box>
             )}
