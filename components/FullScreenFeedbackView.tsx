@@ -192,7 +192,6 @@ export function FullScreenFeedbackView({
             >
               <Tab
                 label="Sentence Feedback"
-                disabled={selectedSentenceIndex === null}
               />
               <Tab label="Band Scores" icon={<Assessment />} iconPosition="start" />
               <Tab label="Paragraph Analysis" icon={<Article />} iconPosition="start" />
