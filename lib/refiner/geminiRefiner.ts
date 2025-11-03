@@ -224,17 +224,42 @@ For EACH paragraph, provide:
 
 **1. revisedParagraph Field (CONSERVATIVE IDEA-FOCUSED revision)**
 Generate a CONSERVATIVE, REALISTIC revised version that:
-- **KEEP ACCEPTABLE IDEAS UNCHANGED** - Only revise score-impacting IDEA issues
 - **MATCH STUDENT'S BAND LEVEL** - Realistic improvements (e.g., Band 6 → 6.5-7, NOT Band 6 → Band 9)
 - **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style, but you must fix basic grammar and vocabulary mistakes
-- **ONLY ADD/EXPAND IDEAS** - Only revise: vague ideas, underdeveloped points, missing evidence, poor flow, structural issues
 - DO NOT fix grammar errors, DO NOT replace vocabulary, DO NOT correct spelling/punctuation
 
-**CRITICAL: The revisedParagraph MUST reflect the changes from BOTH issues and improvements:**
-- **For ISSUES (red boxes)**: Remove or replace the problematic sentences mentioned in the "quote" field
-- **For IMPROVEMENTS (yellow boxes)**: Actually ADD the suggested sentences/ideas from the "suggestion" field into the revisedParagraph
-- The diff algorithm will automatically highlight removed sentences in red (in original) and added sentences in yellow (in revised)
-- Students should be able to see EXACTLY what to remove (red strikethrough in original) and what to add (yellow highlight in revised)
+**CRITICAL: Two types of changes in revisedParagraph:**
+
+**TYPE 1 - REPLACE weak/vague sentences (from "issues" array):**
+- If a sentence has a TR/CC issue (quote in "issues" array), COMPLETELY REMOVE that sentence
+- REPLACE it with an improved version that addresses the issue (with vocab and grammar similar to the student's level. Do NOT use much more advanced vocab and grammar - only 0.5-1.0 band level, as the main purpose is to upgrade students' ideas and reasoning)
+- DO NOT keep the original sentence and add improvements - ONLY show the improved replacement
+- The diff will show: original sentence with red strikethrough → improved sentence in yellow highlight
+
+**Example:**
+- Original: "Without good income, it is hard to pay bills, food and education."
+- Issue: This is vague (lacks specificity about necessities)
+- ❌ WRONG: "Without a sufficient income, it is hard to afford necessities such as housing, food, and education. Indeed, a stable income provides..."
+  (This keeps a reworded version PLUS adds improvement = duplication)
+- ✅ CORRECT: "Indeed, a stable income provides the fundamental security necessary to meet basic needs, such as rent, utilities, groceries, and educational expenses for children, which are non-negotiable for a decent quality of life."
+  (ONLY the improved replacement, no reworded original)
+
+**TYPE 2 - ADD development sentences (from "improvements" array):**
+- If a sentence is acceptable but could be developed further (in "improvements" array)
+- KEEP that sentence EXACTLY as-is (word-for-word, no changes)
+- ADD the suggested development sentences AFTER it
+- The diff will show: original kept as-is → new sentences in yellow highlight
+
+**Example:**
+- Original: "Social media connects people."
+- This sentence is acceptable, just needs development
+- ✅ CORRECT: "Social media connects people. Social media platforms like Facebook and WhatsApp allow families separated by distance to share photos, videos, and messages instantly."
+  (Original kept verbatim + new development added)
+
+**AVOID DUPLICATION:**
+- Never paraphrase the original sentence before adding improvements
+- Either REPLACE completely (for issues) OR KEEP + ADD (for improvements)
+- Never do: original sentence (reworded) + improvement sentence = redundant!
 
 **2. overallParagraphBand**
 Estimated band with brief description (e.g., "Band 6.5-7.0: Good ideas but needs better development")
