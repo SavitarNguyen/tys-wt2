@@ -16,3 +16,8 @@ export const resultAtom = atom<JSX.Element[]>([]);
 export const refinedAtom = atom("");
 export const isIELTSModeAtom = atom(false);
 export const ieltsFeedbackAtom = atom<IELTSFeedback | null>(null);
+
+// Streaming progress state
+export const streamingProgressAtom = atom<number>(0); // 0-100 percentage
+export const streamingStatusAtom = atom<string>(""); // Status message
+export const streamingCharsReceivedAtom = atom<number>(0); // Character count

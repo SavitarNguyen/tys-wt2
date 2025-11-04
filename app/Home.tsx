@@ -16,7 +16,14 @@ import { InstructionsToolbar } from "@/components/InstructionsToolbar";
 import { SupportUkraineBanner } from "@/components/SupportUkraineBanner";
 import { FullScreenFeedbackView } from "@/components/FullScreenFeedbackView";
 import { useAtom } from "jotai";
-import { ieltsFeedbackAtom, isIELTSModeAtom } from "./atoms";
+import {
+  ieltsFeedbackAtom,
+  isIELTSModeAtom,
+  loadingAtom,
+  streamingProgressAtom,
+  streamingStatusAtom,
+  streamingCharsReceivedAtom,
+} from "./atoms";
 import { exportMarkdownToWord } from "@/lib/exportToWord";
 
 export function Home({
@@ -29,6 +36,10 @@ export function Home({
   const toggleDiff = useToggleDiff();
   const [ieltsFeedback, setIeltsFeedback] = useAtom(ieltsFeedbackAtom);
   const [isIELTS] = useAtom(isIELTSModeAtom);
+  const [loading] = useAtom(loadingAtom);
+  const [streamingProgress] = useAtom(streamingProgressAtom);
+  const [streamingStatus] = useAtom(streamingStatusAtom);
+  const [streamingCharsReceived] = useAtom(streamingCharsReceivedAtom);
 
   const hotkeyOptions: Options = {
     enableOnFormTags: true,
@@ -49,8 +60,8 @@ export function Home({
     }
   };
 
-  // Show full-screen feedback view when IELTS feedback is available
-  const showFullScreenFeedback = isIELTS && ieltsFeedback !== null;
+  // Show full-screen feedback view when IELTS mode is active and either loading or feedback is available
+  const showFullScreenFeedback = isIELTS && (loading || ieltsFeedback !== null);
 
   return (
     <>
@@ -104,6 +115,10 @@ export function Home({
           feedback={ieltsFeedback}
           onClose={handleCloseFeedback}
           onDownload={handleDownloadReport}
+          isLoading={loading}
+          streamingProgress={streamingProgress}
+          streamingStatus={streamingStatus}
+          streamingCharsReceived={streamingCharsReceived}
         />
       )}
     </>

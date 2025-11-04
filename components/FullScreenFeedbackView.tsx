@@ -25,22 +25,78 @@ import { SentenceFeedbackPanel } from "./SentenceFeedbackPanel";
 import { ParagraphAnalysisView } from "./ParagraphAnalysisView";
 import { BandScoresWithEvidence } from "./BandScoresWithEvidence";
 import { ParagraphWithDiff } from "./ParagraphWithDiff";
+import { IELTSFeedbackLoadingSkeleton } from "./IELTSFeedbackLoadingSkeleton";
 
 interface FullScreenFeedbackViewProps {
-  feedback: IELTSFeedback;
+  feedback: IELTSFeedback | null;
   onClose: () => void;
   onDownload: () => void;
+  isLoading?: boolean;
+  streamingProgress?: number;
+  streamingStatus?: string;
+  streamingCharsReceived?: number;
 }
 
 export function FullScreenFeedbackView({
   feedback,
   onClose,
   onDownload,
+  isLoading = false,
+  streamingProgress = 0,
+  streamingStatus = "",
+  streamingCharsReceived = 0,
 }: FullScreenFeedbackViewProps) {
   const [selectedSentenceIndex, setSelectedSentenceIndex] = useState<number | null>(null);
   const [reviewedSentences, setReviewedSentences] = useState<Set<string>>(new Set());
   const [rightPanelTab, setRightPanelTab] = useState<number>(0);
   const [selectedParagraphIndex, setSelectedParagraphIndex] = useState<number | null>(null);
+
+  // If loading, show skeleton
+  if (isLoading || !feedback) {
+    return (
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          bgcolor: "background.default",
+          zIndex: 1300,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Top Bar */}
+        <Paper
+          elevation={2}
+          sx={{
+            p: 2,
+            borderRadius: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <IconButton onClick={onClose} size="small">
+              <Close />
+            </IconButton>
+            <Typography variant="h6">IELTS Feedback Review</Typography>
+          </Stack>
+        </Paper>
+
+        {/* Loading Content */}
+        <Box sx={{ flex: 1, overflow: "auto", p: 3 }}>
+          <IELTSFeedbackLoadingSkeleton
+            progress={streamingProgress}
+            statusMessage={streamingStatus}
+            charsReceived={streamingCharsReceived}
+          />
+        </Box>
+      </Box>
+    );
+  }
 
   const handleSentenceClick = (index: number) => {
     setSelectedSentenceIndex(index);
