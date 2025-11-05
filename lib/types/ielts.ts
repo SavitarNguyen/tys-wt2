@@ -16,7 +16,6 @@ export interface IELTSError {
     end: number;
   };
 }
-
 // Word-level correction within a sentence
 export interface WordCorrection {
   original: string; // Word to be deleted/changed
