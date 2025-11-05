@@ -1,6 +1,22 @@
 export type ErrorSeverity = "critical" | "important" | "minor";
 export type IELTSCriterion = "TR" | "CC" | "LR" | "GRA";
 
+// IELTS error for interactive error learning
+export interface IELTSError {
+  id: string;
+  severity: ErrorSeverity;
+  criteria: IELTSCriterion[];
+  originalText: string;
+  explanation: string; // What's wrong
+  reason: string; // Why it matters
+  correction: string; // The corrected text
+  example: string; // Example usage
+  position: {
+    start: number;
+    end: number;
+  };
+}
+
 // Word-level correction within a sentence
 export interface WordCorrection {
   original: string; // Word to be deleted/changed
@@ -78,6 +94,7 @@ export interface IELTSFeedback {
   bandScores: IELTSBandScore[];
   sentences: SentenceFeedback[]; // Sentence-by-sentence feedback
   paragraphs: ParagraphAnalysis[]; // Paragraph-level analysis
+  errors: IELTSError[]; // Flat array of all errors for interactive learning
   overallTA: string; // Overall task achievement assessment
   overallCC: string; // Overall coherence & cohesion assessment
   strengths: string[];
