@@ -1,6 +1,20 @@
 export type ErrorSeverity = "critical" | "important" | "minor";
 export type IELTSCriterion = "TR" | "CC" | "LR" | "GRA";
 
+export interface IELTSError {
+  id: string;
+  severity: ErrorSeverity;
+  criteria: IELTSCriterion[];
+  originalText: string;
+  explanation: string; // What's wrong
+  reason: string; // Why it matters
+  correction: string; // The corrected text
+  example: string; // Example usage
+  position: {
+    start: number;
+    end: number;
+  };
+}
 // Word-level correction within a sentence
 export interface WordCorrection {
   original: string; // Word to be deleted/changed
