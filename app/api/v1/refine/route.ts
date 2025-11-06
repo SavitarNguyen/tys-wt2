@@ -7,11 +7,12 @@ interface RequestJSON {
   text?: string;
   instructionNames: InstructionName[];
   stream?: boolean;
+  apiKey?: string; // Optional: user-provided Gemini API key
 }
 
 export async function POST(request: Request) {
   const body: RequestJSON = await request.json();
-  const { text, instructionNames, stream = true } = body;
+  const { text, instructionNames, stream = true, apiKey: userApiKey } = body;
 
   if (!text) {
     return NextResponse.json({ error: "No text provided" });
@@ -37,7 +38,8 @@ export async function POST(request: Request) {
           controller.close();
         } catch (error) {
           console.error("Streaming error:", error);
-          const errorData = JSON.stringify({ error: "Streaming failed" });
+          const errorMessage = error instanceof Error ? error.message : "Streaming failed";
+          const errorData = JSON.stringify({ error: errorMessage });
           controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
           controller.close();
         }

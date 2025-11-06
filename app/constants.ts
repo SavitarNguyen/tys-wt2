@@ -17,4 +17,4 @@ It is an open-source project. The code is available on https://github.com/imanku
 
 Give it a try now.`;
 
-export const DEMO_INSTRUCTION_NAMES: InstructionName[] = ["short", "simple"];
+export const DEMO_INSTRUCTION_NAMES: InstructionName[] = ["ielts"];

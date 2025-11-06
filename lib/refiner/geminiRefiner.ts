@@ -9,6 +9,11 @@ import { getCustomPrompts } from "./customPrompts";
 
 const apiKey = process.env.GEMINI_API_KEY || "";
 const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+if (!apiKey) {
+  console.error("GEMINI_API_KEY is not set in environment variables");
+}
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export const languageDetector = new LanguageDetect();
@@ -47,6 +52,10 @@ Detailed Feedback with Inline Edits. Instructions:
 `;
 
   try {
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured. Please set it in your environment variables.");
+    }
+
     const geminiModel = genAI.getGenerativeModel({ model });
     
     const result = await geminiModel.generateContent([
@@ -60,7 +69,8 @@ Detailed Feedback with Inline Edits. Instructions:
     return refined;
   } catch (error) {
     console.error("Gemini API error:", error);
-    throw new Error("Failed to refine text with Gemini API");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    throw new Error(`Failed to refine text with Gemini API: ${errorMessage}`);
   }
 }
 
@@ -626,6 +636,10 @@ USE THE ABOVE COMPREHENSIVE GUIDE WHEN EVALUATING THE ESSAY BELOW:
 ${text}`;
 
   try {
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured. Please set it in your environment variables.");
+    }
+
     const geminiModel = genAI.getGenerativeModel({
       model,
       generationConfig: {
@@ -642,7 +656,8 @@ ${text}`;
     return jsonResponse;
   } catch (error) {
     console.error("IELTS Interactive Gemini API error:", error);
-    throw new Error("Failed to generate interactive IELTS feedback with Gemini API");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    throw new Error(`Failed to generate interactive IELTS feedback: ${errorMessage}`);
   }
 }
 
@@ -699,6 +714,10 @@ Detailed Feedback with Inline Edits. Instructions:
 `;
 
   try {
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured. Please set it in your environment variables.");
+    }
+
     const geminiModel = genAI.getGenerativeModel({ model });
 
     const result = await geminiModel.generateContentStream([
@@ -715,7 +734,8 @@ Detailed Feedback with Inline Edits. Instructions:
     await trackRefine(text, prompt, fullText, instructions, languageName);
   } catch (error) {
     console.error("Gemini API streaming error:", error);
-    throw new Error("Failed to refine text with Gemini API streaming");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    throw new Error(`Failed to refine text with Gemini API: ${errorMessage}`);
   }
 }
 
@@ -1281,6 +1301,10 @@ USE THE ABOVE COMPREHENSIVE GUIDE WHEN EVALUATING THE ESSAY BELOW:
 ${text}`;
 
   try {
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured. Please set it in your environment variables.");
+    }
+
     const geminiModel = genAI.getGenerativeModel({
       model,
       generationConfig: {
@@ -1301,6 +1325,7 @@ ${text}`;
     await trackRefine(text, ieltsPrompt, fullResponse, instructions, languageName);
   } catch (error) {
     console.error("IELTS Interactive Gemini API streaming error:", error);
-    throw new Error("Failed to generate interactive IELTS feedback with Gemini API streaming");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    throw new Error(`Failed to generate interactive IELTS feedback: ${errorMessage}`);
   }
 }
